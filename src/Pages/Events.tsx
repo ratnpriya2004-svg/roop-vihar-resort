@@ -99,9 +99,9 @@ export default function Events() {
 
           {/* VENUES GRID */}
           <div className="mt-12 grid gap-4 sm:grid-cols-2">
-            {venues.map((v, i) => {
-              const Icon = v.icon;
-              return (
+            {venues.map((v) => {
+            const Icon = v.icon;
+            return (
                 <div
                   key={v.title}
                   className="event-anim group flex items-start gap-4 rounded-2xl border border-[#B99A65]/25 bg-white p-5 transition-all duration-300 hover:border-[#B99A65]/70 hover:shadow-md"
