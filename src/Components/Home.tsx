@@ -17,7 +17,6 @@ import BookingBar from "../Components/Home/BookingBar";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Cloudinary Video Link
 const CLOUDINARY_VIDEO_URL = "https://res.cloudinary.com/vn8ahlyh/video/upload/v1793185644/hotel.mp4";
 
 export default function Home() {
@@ -41,7 +40,7 @@ export default function Home() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Hero entrance
+  // Hero entrance Animation
   useEffect(() => {
     const hero = heroRef.current;
     if (!hero) return;
@@ -68,16 +67,19 @@ export default function Home() {
 
       <Header />
 
-      <main className="relative min-h-screen bg-[#FBF8F2] text-[#142522]">
-        {/* ============ HERO (STICKY — next section slides over) ============ */}
+      <main className="relative bg-[#FBF8F2] text-[#142522]">
+        
+        {/* ====================================================
+            HERO SECTION — YAHI EK STICKY RAHEGA
+        ==================================================== */}
         <section
           id="home"
           ref={heroRef}
-          className="sticky top-0 z-0 flex min-h-[100svh] flex-col justify-center overflow-hidden bg-[#142522] px-5 pt-24 pb-8 text-center text-[#F6F0E5] sm:px-8 sm:pt-28"
+          className="sticky top-0 z-0 flex min-h-[100svh] flex-col justify-center overflow-hidden bg-[#142522] px-5 pb-8 pt-24 text-center text-[#F6F0E5] sm:px-8 sm:pt-28"
         >
           <video
             className="absolute inset-0 h-full w-full object-cover"
-            src={CLOUDINARY_VIDEO_URL} // <--- YAHAN CLOUDINARY LINK DAALA HAI
+            src={CLOUDINARY_VIDEO_URL}
             autoPlay muted loop playsInline preload="metadata"
             aria-hidden="true"
           />
@@ -139,41 +141,46 @@ export default function Home() {
           </a>
         </section>
 
-        {/* ============ STACKED SECTIONS (each slides over previous) ============ */}
-        <div className="stack-section relative z-10 bg-[#FBF8F2]">
-          <BookingBar />
+        {/* ====================================================
+            NORMAL SECTIONS — Ye sab normal scroll honge
+        ==================================================== */}
+        <div className="relative z-10">
+          <div className="stack-section bg-[#FBF8F2]">
+            <BookingBar />
+          </div>
+
+          <div className="stack-section bg-[#F6F0E5]">
+            <OurStory />
+          </div>
+
+          <div className="stack-section bg-[#FBF8F2]">
+            <Stays />
+          </div>
+
+          <div className="stack-section bg-[#F5EAD2]">
+            <Celebrations />
+          </div>
+
+          <div className="stack-section bg-[#F6F0E5]">
+            <Dining />
+          </div>
+
+          <div className="stack-section bg-[#FBF8F2]">
+            <Testimonials />
+          </div>
+
+          <div className="stack-section bg-[#F5EAD2]">
+            <Contact />
+          </div>
+
+          <div className="stack-section bg-[#142522] text-white">
+            <Footer />
+          </div>
         </div>
 
-        <div className="stack-section relative z-20 bg-[#F6F0E5]">
-          <OurStory />
-        </div>
-
-        <div className="stack-section relative z-30 bg-[#FBF8F2]">
-          <Stays />
-        </div>
-
-        <div className="stack-section relative z-40 bg-[#F5EAD2]">
-          <Celebrations />
-        </div>
-
-        <div className="stack-section relative z-50 bg-[#F6F0E5]">
-          <Dining />
-        </div>
-
-        <div className="stack-section relative z-[60] bg-[#FBF8F2]">
-          <Testimonials />
-        </div>
-
-        <div className="stack-section relative z-[70] bg-[#F5EAD2]">
-          <Contact />
-        </div>
-
-        <div className="stack-section relative z-[80] bg-[#142522]">
-          <Footer />
-        </div>
       </main>
 
-      {/* FLOATING BRAND ICON — matches header icon */}
+      {/* FLOATING BRAND ICON */}
       <a
         href="#home"
         aria-label="Back to top"

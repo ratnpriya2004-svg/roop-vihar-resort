@@ -18,18 +18,6 @@ export default function OurStory() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const ctx = gsap.context(() => {
-      // Section entrance (as it slides over previous)
-      gsap.fromTo(
-        section,
-        { yPercent: 8, scale: 0.97 },
-        {
-          yPercent: 0, scale: 1, ease: "none",
-          scrollTrigger: {
-            trigger: section, start: "top bottom", end: "top 25%", scrub: 1,
-          },
-        }
-      );
-
       // Title line masks
       section.querySelectorAll<HTMLElement>(".story-title-line").forEach((line, i) => {
         gsap.from(line, {

@@ -4,7 +4,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowLeft, ArrowRight, ArrowUpRight, BedDouble, UsersRound, Sparkles } from "lucide-react";
 
-// Your exact imports
 import luxuryRoom from "../../assets/images/img_1 (2).webp";
 import dulexyRoom from "../../assets/images/img_1 (3).webp";
 import corporateroom from "../../assets/images/img_3 (2).webp";
@@ -12,36 +11,9 @@ import corporateroom from "../../assets/images/img_3 (2).webp";
 gsap.registerPlugin(ScrollTrigger);
 
 const rooms = [
-  { 
-    name: "Standard Room", 
-    tag: "Comfort", 
-    rate: "₹2,499", 
-    guests: "Up to 2 guests", 
-    image: luxuryRoom, 
-    alt: "Standard room", 
-    note: "Comfort-led interiors.", 
-    number: "01" 
-  },
-  { 
-    name: "Deluxe Room", 
-    tag: "A Little More", 
-    rate: "₹2,799", 
-    guests: "Up to 2 guests", 
-    image: dulexyRoom, 
-    alt: "Deluxe room", 
-    note: "Refined details.", 
-    number: "02" 
-  },
-  { 
-    name: "Suite", 
-    tag: "Space to Settle", 
-    rate: "₹3,099", 
-    guests: "Up to 3 guests", 
-    image: corporateroom, 
-    alt: "Suite", 
-    note: "Extra space, extra calm.", 
-    number: "03" 
-  },
+  { name: "Standard Room", tag: "Comfort", rate: "₹2,499", guests: "Up to 2 guests", image: luxuryRoom, alt: "Standard room", note: "Comfort-led interiors.", number: "01" },
+  { name: "Deluxe Room", tag: "A Little More", rate: "₹2,799", guests: "Up to 2 guests", image: dulexyRoom, alt: "Deluxe room", note: "Refined details.", number: "02" },
+  { name: "Suite", tag: "Space to Settle", rate: "₹3,099", guests: "Up to 3 guests", image: corporateroom, alt: "Suite", note: "Extra space, extra calm.", number: "03" },
 ];
 
 export default function Stays() {
@@ -54,14 +26,6 @@ export default function Stays() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const ctx = gsap.context(() => {
-      gsap.fromTo(section, 
-        { yPercent: 6, scale: 0.98 }, 
-        {
-          yPercent: 0, scale: 1, ease: "none",
-          scrollTrigger: { trigger: section, start: "top bottom", end: "top 25%", scrub: 1 },
-        }
-      );
-
       gsap.fromTo(".stays-reveal", 
         { y: 35, opacity: 0 }, 
         {
@@ -147,7 +111,6 @@ export default function Stays() {
           {rooms.map((room) => (
             <article key={room.number} className="stay-card group flex w-[88%] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-[#B99A65]/25 bg-white transition-all duration-500 hover:-translate-y-1 hover:border-[#B99A65]/80 hover:shadow-[0_20px_55px_rgba(37,48,46,0.10)] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-19px)]">
               
-              {/* FIXED IMAGE SECTION: Using aspect-[4/3] to remove blank space */}
               <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden">
                 <img src={room.image} alt={room.alt} loading="lazy" className="stay-image h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#142522]/65 via-transparent to-transparent opacity-80" />
@@ -155,7 +118,6 @@ export default function Stays() {
                 <span className="absolute bottom-3 right-4 font-serif text-5xl text-white/90 sm:text-6xl drop-shadow-md">{room.number}</span>
               </div>
 
-              {/* CONTENT SECTION */}
               <div className="flex flex-1 flex-col p-5 sm:p-6">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">

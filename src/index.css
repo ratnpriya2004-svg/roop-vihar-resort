@@ -85,32 +85,15 @@ section[id], div[id] {
 }
 
 /* ==========================================================
-   STACKED SECTION SYSTEM
-   Every major section is a "card" that slides OVER the previous.
+   STACKED SECTION SYSTEM (NORMAL SCROLL)
+   No overlap, no sticky. Just normal flow.
    ========================================================== */
 .stack-section {
   position: relative;
   width: 100%;
-  border-radius: 0;
-  will-change: transform, border-radius;
-  transform-origin: top center;
 }
 
-.stack-section:not(:first-of-type) {
-  margin-top: -2rem;
-  border-top-left-radius: 40px;
-  border-top-right-radius: 40px;
-  box-shadow: 0 -30px 80px rgba(20, 37, 34, 0.18);
-}
-
-@media (min-width: 768px) {
-  .stack-section:not(:first-of-type) {
-    border-top-left-radius: 56px;
-    border-top-right-radius: 56px;
-  }
-}
-
-/* Animated background grid pattern for the second/lighter page */
+/* Animated background grid pattern */
 .gold-grid-bg {
   background-image:
     linear-gradient(rgba(185, 154, 101, 0.08) 1px, transparent 1px),

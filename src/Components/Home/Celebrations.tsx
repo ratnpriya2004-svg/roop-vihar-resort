@@ -24,10 +24,6 @@ export default function Celebrations() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const ctx = gsap.context(() => {
-      gsap.fromTo(section, { yPercent: 6, scale: 0.98 }, {
-        yPercent: 0, scale: 1, ease: "none",
-        scrollTrigger: { trigger: section, start: "top bottom", end: "top 25%", scrub: 1 },
-      });
       gsap.from(".celebration-heading", {
         y: 35, opacity: 0, duration: 0.9, stagger: 0.12, ease: "power3.out",
         scrollTrigger: { trigger: ".celebration-heading-wrap", start: "top 85%", once: true },
