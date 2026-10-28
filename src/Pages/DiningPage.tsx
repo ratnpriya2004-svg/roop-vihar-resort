@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useLocation, Link } from "react-router-dom"; // Added useLocation
+import { useLocation } from "react-router-dom"; 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { 

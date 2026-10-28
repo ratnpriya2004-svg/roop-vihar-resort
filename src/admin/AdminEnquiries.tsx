@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
-import { X, Search, Mail, Phone, Clock, CheckCircle, ExternalLink, Download } from "lucide-react";
+import { X, Search, Mail, Phone, Clock, ExternalLink, Download } from "lucide-react";
 
 export default function AdminEnquiries() {
   const [enquiries, setEnquiries] = useState<any[]>([]);

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
-import { Check, X, Search } from "lucide-react";
+import { X, Search } from "lucide-react";
 
 export default function AdminBookings() {
   const [bookings, setBookings] = useState<any[]>([]);
