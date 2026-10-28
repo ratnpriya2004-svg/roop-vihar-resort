@@ -4,7 +4,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowUpRight, BedDouble, UsersRound, Sparkles } from "lucide-react";
 import PageShell from "./_PageShell";
-import { supabase } from "../supabaseClient"; // Import Supabase
+import { supabase } from "../supabaseClient";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -68,15 +68,23 @@ export default function Rooms() {
             to={`/rooms/${room.slug}`}
             className="room-card group flex flex-col overflow-hidden rounded-2xl border border-[#B99A65]/25 bg-white opacity-100 transition-all duration-500 hover:-translate-y-2 hover:border-[#B99A65]/70 hover:shadow-[0_25px_60px_-15px_rgba(37,48,46,0.15)]"
           >
-            <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-[#E5DFD3]">
+            {/* 
+              YAHAN FIX KIYA HAI:
+              `aspect-[4/3]` hata diya hai. Ab image apni natural height (h-auto) legi. 
+              Bas card ke top corners se match karne ke liye `rounded-t-2xl` laga diya hai.
+            */}
+            <div className="relative w-full shrink-0 overflow-hidden">
               <img
-                src={room.images[0]} // Fetching from Supabase array
+                src={room.images && room.images.length > 0 ? room.images[0] : "/fallback.jpg"}
                 alt={room.name}
-                loading="eager"
-                className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                loading="lazy"
+                className="h-auto w-full object-cover transition-transform duration-1000 group-hover:scale-110"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#142522]/60 via-transparent to-transparent opacity-60" />
               
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#142522]/50 via-transparent to-transparent opacity-60" />
+              
+              {/* Tag */}
               <span className="absolute left-4 top-4 flex items-center gap-1.5 rounded-full border border-white/20 bg-[#142522]/80 px-3 py-1.5 text-[9px] uppercase tracking-[0.16em] text-white backdrop-blur-md">
                 <Sparkles size={12} className="text-[#D5B780]" />
                 Room

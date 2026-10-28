@@ -19,10 +19,10 @@ import {
 } from "lucide-react";
 
 import PageShell from "./_PageShell";
-import resortImg from "../assets/images/resort.webp";
+import resortImg from "../assets/images/gg.webp";
 import heroImg from "../assets/images/hero.webp";
-import roomImg from "../assets/images/luxery room.webp";
-import weddingImg from "../assets/images/marred.webp";
+import roomImg from "../assets/images/img_1 (2).webp";
+import weddingImg from "../assets/images/img_2 (2).webp";
 import directorImg from "../assets/images/director.webp";
 
 gsap.registerPlugin(ScrollTrigger);

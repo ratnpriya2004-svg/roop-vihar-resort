@@ -1,11 +1,10 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Star, Quote, ArrowUpRight, BadgeCheck } from "lucide-react";
+import { Star, Quote, BadgeCheck } from "lucide-react";
 
 // ==========================================
 // 1. YAHAN APNI LOCAL IMAGES IMPORT KAREIN
-// (Apni image ka naam yahan likhein jo aapne download ki hai)
 // ==========================================
 import avatar1 from "../../assets/images/mt.webp"; // Dhiraj
 import avatar2 from "../../assets/images/mmmttte.webp"; // Bala Jee
@@ -190,14 +189,15 @@ export default function Testimonials() {
 
 function ReviewCard({ item }: { item: (typeof testimonials)[number] }) {
   return (
-    <article className="group relative flex w-[300px] shrink-0 flex-col rounded-2xl border border-[#B99A5A]/25 bg-white/85 p-6 shadow-[0_10px_40px_rgba(67,49,20,0.05)] backdrop-blur-sm transition-all duration-500 hover:-translate-y-2 hover:border-[#B99A5A]/70 hover:shadow-[0_24px_55px_rgba(67,49,20,0.14)] sm:w-[340px] sm:p-7">
+    // 'group' aur 'hover:translate' hata diya hai, bas simple card bacha hai
+    <article className="relative flex w-[300px] shrink-0 flex-col rounded-2xl border border-[#B99A5A]/25 bg-white/85 p-6 shadow-[0_10px_40px_rgba(67,49,20,0.05)] backdrop-blur-sm sm:w-[340px] sm:p-7">
       <div className="mb-4 flex items-center justify-between">
         <div className="flex gap-1 text-[#B99A5A]">
           {Array.from({ length: 5 }).map((_, i) => (
             <Star key={i} size={14} fill={i < item.rating ? "currentColor" : "none"} strokeWidth={1.5} />
           ))}
         </div>
-        <Quote size={24} strokeWidth={1.2} className="text-[#D7B879]/70 transition-transform duration-500 group-hover:rotate-12" />
+        <Quote size={24} strokeWidth={1.2} className="text-[#D7B879]/70" />
       </div>
       <p className="flex-1 font-serif text-base leading-7 text-[#25302E] sm:text-lg">“{item.review}”</p>
       <div className="my-5 h-px w-full bg-gradient-to-r from-[#D7B879]/70 via-[#D7B879]/30 to-transparent" />
@@ -207,7 +207,6 @@ function ReviewCard({ item }: { item: (typeof testimonials)[number] }) {
           <h3 className="truncate text-sm font-semibold text-[#25302E]">{item.name}</h3>
           <p className="mt-0.5 text-[11px] text-[#25302E]/60">{item.location}</p>
         </div>
-        <ArrowUpRight size={16} className="shrink-0 text-[#B99A5A] transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1" />
       </div>
     </article>
   );
