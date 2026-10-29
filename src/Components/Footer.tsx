@@ -8,28 +8,38 @@ import {
   Phone,
   Mail,
   Clock,
-  Heart,
   ArrowUp,
+  Home,
+  Info,
+  BedDouble,
+  Heart,
+  Utensils,
+  Camera,
+  PhoneCall,
+  Sparkles,
+  CalendarHeart,
+  PartyPopper,
+  Wine,
 } from "lucide-react";
-import { FaFacebookF, FaInstagram } from "react-icons/fa";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Original links (No changes)
 const quickLinks = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Rooms", href: "/rooms" },
-  { label: "Weddings", href: "/weddings" },
-  { label: "Dining", href: "/dining" },
-  { label: "Gallery", href: "/gallery" },
-  { label: "Contact", href: "/contact" },
+  { label: "Home", href: "/", icon: Home },
+  { label: "About", href: "/about", icon: Info },
+  { label: "Rooms", href: "/rooms", icon: BedDouble },
+  { label: "Weddings", href: "/weddings", icon: Heart },
+  { label: "Dining", href: "/dining", icon: Utensils },
+  { label: "Gallery", href: "/gallery", icon: Camera },
+  { label: "Contact", href: "/contact", icon: PhoneCall },
 ];
 
 const experiences = [
-  { label: "Luxury Stays", href: "/rooms" },
-  { label: "Wedding Celebrations", href: "/weddings" },
-  { label: "Banquet & Events", href: "/events" },
-  { label: "Fine Dining", href: "/dining" },
+  { label: "Luxury Stays", href: "/rooms", icon: Sparkles },
+  { label: "Wedding Celebrations", href: "/weddings", icon: CalendarHeart },
+  { label: "Banquet & Events", href: "/events", icon: PartyPopper },
+  { label: "Fine Dining", href: "/dining", icon: Wine },
 ];
 
 const legal = [
@@ -57,7 +67,7 @@ export default function Footer() {
           duration: 0.8,
           stagger: 0.1,
           ease: "power3.out",
-          scrollTrigger: { trigger: footer, start: "top 88%", once: true },
+          scrollTrigger: { trigger: footer, start: "top 90%", once: true },
         }
       );
     }, footer);
@@ -71,84 +81,66 @@ export default function Footer() {
   return (
     <footer
       ref={footerRef}
-      className="relative overflow-hidden bg-[#142522] text-[#F6F0E5]"
+      className="relative overflow-hidden bg-white font-sans"
     >
+      {/* Background Decorative Grid */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full border border-[#D7B879]/10"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full border border-[#D7B879]/10"
+        className="pointer-events-none absolute inset-0 opacity-[0.04]"
+        style={{
+          backgroundImage:
+            "linear-gradient(#142522 1px, transparent 1px), linear-gradient(90deg, #142522 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
+        }}
       />
 
-      {/* TOP CTA */}
-      <div className="relative border-b border-[#B99A5A]/20">
-        <div className="mx-auto flex max-w-7xl flex-col gap-6 px-5 py-12 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-12">
-          <div className="footer-reveal max-w-2xl">
-            <span className="mb-3 block text-xs uppercase tracking-[0.3em] text-[#D7B879]">
-              Your next beautiful escape
-            </span>
-            <h2 className="font-serif text-3xl leading-tight sm:text-4xl lg:text-5xl">
-              Every stay deserves
-              <br className="hidden sm:block" /> a beautiful story.
-            </h2>
+      {/* Decorative Gold Circles */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full border border-[#B99A65]/30"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full border border-[#B99A65]/20"
+      />
+
+      {/* ========================================================
+          TRANSPARENT FULL WIDTH TEXT (Just Text, No BG)
+      ======================================================== */}
+      <div className="relative z-10 w-full py-16 text-center lg:py-20">
+        <div className="mx-auto px-4">
+          <h2 className="footer-reveal font-serif text-[clamp(3.5rem,12vw,10rem)] leading-none tracking-[0.05em] text-[#142522]">
+            ROOP VIHAR
+          </h2>
+          <div className="footer-reveal mt-4 flex items-center justify-center gap-4">
+            <span className="h-px w-12 bg-[#B99A65] sm:w-20" />
+            <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#B99A65] sm:text-xs">
+              Resorts
+            </p>
+            <span className="h-px w-12 bg-[#B99A65] sm:w-20" />
           </div>
-          <Link
-            to="/bookings"
-            className="footer-reveal group inline-flex w-fit items-center gap-3 rounded-full border border-[#D7B879] px-6 py-4 text-sm font-medium text-[#F6F0E5] transition-all hover:bg-[#D7B879] hover:text-[#142522]"
-          >
-            Plan Your Stay
-            <ArrowUpRight
-              size={18}
-              className="transition-transform group-hover:-translate-y-1 group-hover:translate-x-1"
-            />
-          </Link>
         </div>
       </div>
 
-      {/* MAIN */}
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-5 py-14 sm:px-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-10 lg:px-12 lg:py-20">
-        {/* BRAND */}
-        <div className="footer-reveal">
-          <Link to="/" className="inline-block">
-            <span className="block font-serif text-3xl tracking-wide">
-              ROOP VIHAR
-            </span>
-            <span className="mt-1 block text-[10px] uppercase tracking-[0.42em] text-[#D7B879]">
-              Resorts
-            </span>
-          </Link>
-          <div className="my-6 h-px w-16 bg-[#D7B879]" />
-          <p className="max-w-xs text-sm leading-7 text-[#F6F0E5]/70">
+      {/* ========================================================
+          MAIN CONTENT
+      ======================================================== */}
+      <div className="relative z-10 grid grid-cols-1 gap-12 px-6 py-12 sm:px-10 md:grid-cols-2 lg:grid-cols-12 lg:gap-8 lg:px-16 lg:py-16">
+        
+        {/* BRAND INFO */}
+        <div className="footer-reveal lg:col-span-4">
+          <h3 className="mb-6 text-[11px] font-bold uppercase tracking-[0.2em] text-[#77766F]">
+            About Roop Vihar
+          </h3>
+          <p className="max-w-xs text-sm leading-7 text-[#77766F]">
             Discover refined comfort, warm hospitality and memorable
             celebrations at Roop Vihar Resorts, Bhagalpur.
           </p>
-          <div className="mt-7 flex items-center gap-3">
-            <a
-              href="https://www.instagram.com/"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Instagram"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#B99A5A]/35 transition-all hover:border-[#D7B879] hover:bg-[#D7B879] hover:text-[#142522]"
-            >
-              <FaInstagram size={17} />
-            </a>
-            <a
-              href="https://www.facebook.com/"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Facebook"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#B99A5A]/35 transition-all hover:border-[#D7B879] hover:bg-[#D7B879] hover:text-[#142522]"
-            >
-              <FaFacebookF size={17} />
-            </a>
-          </div>
         </div>
 
-        {/* QUICK */}
-        <div className="footer-reveal">
-          <h3 className="mb-6 text-xs font-semibold uppercase tracking-[0.25em] text-[#D7B879]">
+        {/* QUICK LINKS */}
+        <div className="footer-reveal lg:col-span-2 lg:pl-4">
+          <h3 className="mb-6 text-[11px] font-bold uppercase tracking-[0.2em] text-[#77766F]">
             Explore
           </h3>
           <ul className="space-y-4">
@@ -156,13 +148,14 @@ export default function Footer() {
               <li key={link.label}>
                 <Link
                   to={link.href}
-                  className="group inline-flex items-center gap-2 text-sm text-[#F6F0E5]/80 transition-colors hover:text-[#D7B879]"
+                  className="group flex items-center gap-2.5 text-sm font-medium text-[#142522] transition-colors hover:text-[#B99A65]"
                 >
-                  {link.label}
-                  <ArrowUpRight
-                    size={13}
-                    className="opacity-0 transition-all group-hover:translate-x-1 group-hover:opacity-100"
+                  <link.icon
+                    size={15}
+                    className="text-[#B99A65]/70 transition-colors group-hover:text-[#B99A65]"
+                    strokeWidth={2}
                   />
+                  {link.label}
                 </Link>
               </li>
             ))}
@@ -170,8 +163,8 @@ export default function Footer() {
         </div>
 
         {/* EXPERIENCES */}
-        <div className="footer-reveal">
-          <h3 className="mb-6 text-xs font-semibold uppercase tracking-[0.25em] text-[#D7B879]">
+        <div className="footer-reveal lg:col-span-3 lg:pl-4">
+          <h3 className="mb-6 text-[11px] font-bold uppercase tracking-[0.2em] text-[#77766F]">
             Experiences
           </h3>
           <ul className="space-y-4">
@@ -179,19 +172,26 @@ export default function Footer() {
               <li key={item.label}>
                 <Link
                   to={item.href}
-                  className="text-sm text-[#F6F0E5]/80 transition-colors hover:text-[#D7B879]"
+                  className="group flex items-center gap-2.5 text-sm font-medium text-[#142522] transition-colors hover:text-[#B99A65]"
                 >
+                  <item.icon
+                    size={15}
+                    className="text-[#B99A65]/70 transition-colors group-hover:text-[#B99A65]"
+                    strokeWidth={2}
+                  />
                   {item.label}
                 </Link>
               </li>
             ))}
           </ul>
 
-          <div className="mt-8 flex items-start gap-3">
-            <Clock size={17} className="mt-1 shrink-0 text-[#D7B879]" />
+          <div className="mt-8 flex items-start gap-3 rounded-lg border border-[#B99A65]/20 bg-[#FBF8F2]/50 p-4">
+            <Clock size={16} className="mt-0.5 shrink-0 text-[#B99A65]" strokeWidth={2} />
             <div>
-              <p className="text-sm font-medium">Check-in & Check-out</p>
-              <p className="mt-2 text-xs leading-6 text-[#F6F0E5]/70">
+              <p className="text-sm font-bold text-[#142522]">
+                Check-in & Check-out
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-[#77766F]">
                 Check-in: 12:00 PM
                 <br />
                 Check-out: 11:00 AM
@@ -201,9 +201,9 @@ export default function Footer() {
         </div>
 
         {/* CONTACT */}
-        <div className="footer-reveal">
-          <h3 className="mb-6 text-xs font-semibold uppercase tracking-[0.25em] text-[#D7B879]">
-            Get in Touch
+        <div className="footer-reveal lg:col-span-3 lg:pl-4">
+          <h3 className="mb-6 text-[11px] font-bold uppercase tracking-[0.2em] text-[#77766F]">
+            Get In Touch
           </h3>
           <div className="space-y-5">
             <a
@@ -212,8 +212,8 @@ export default function Footer() {
               rel="noreferrer"
               className="group flex items-start gap-3"
             >
-              <MapPin size={18} className="mt-1 shrink-0 text-[#D7B879]" />
-              <span className="text-sm leading-6 text-[#F6F0E5]/80 transition-colors group-hover:text-[#D7B879]">
+              <MapPin size={16} className="mt-0.5 shrink-0 text-[#B99A65]" strokeWidth={2} />
+              <span className="text-sm leading-6 text-[#77766F] transition-colors group-hover:text-[#142522]">
                 R. H. Lane, Barari,
                 <br />
                 Bhagalpur, Bihar - 812003
@@ -221,23 +221,23 @@ export default function Footer() {
             </a>
             <a
               href="tel:+917631005599"
-              className="flex items-center gap-3 text-sm text-[#F6F0E5]/80 hover:text-[#D7B879]"
+              className="flex items-center gap-3 text-sm text-[#77766F] hover:text-[#142522]"
             >
-              <Phone size={17} className="shrink-0 text-[#D7B879]" />
+              <Phone size={16} className="shrink-0 text-[#B99A65]" strokeWidth={2} />
               <span>+91 76310 05599</span>
             </a>
             <a
               href="tel:+919801897235"
-              className="flex items-center gap-3 text-sm text-[#F6F0E5]/80 hover:text-[#D7B879]"
+              className="flex items-center gap-3 text-sm text-[#77766F] hover:text-[#142522]"
             >
-              <Phone size={17} className="shrink-0 text-[#D7B879]" />
+              <Phone size={16} className="shrink-0 text-[#B99A65]" strokeWidth={2} />
               <span>+91 98018 97235</span>
             </a>
             <a
               href="mailto:info@roopviharresorts.com"
-              className="flex items-start gap-3 break-all text-sm text-[#F6F0E5]/80 hover:text-[#D7B879]"
+              className="flex items-start gap-3 break-all text-sm text-[#77766F] hover:text-[#142522]"
             >
-              <Mail size={17} className="mt-0.5 shrink-0 text-[#D7B879]" />
+              <Mail size={16} className="mt-0.5 shrink-0 text-[#B99A65]" strokeWidth={2} />
               <span>info@roopviharresorts.com</span>
             </a>
           </div>
@@ -245,50 +245,44 @@ export default function Footer() {
             href="https://wa.me/919801897235"
             target="_blank"
             rel="noreferrer"
-            className="mt-7 inline-flex items-center gap-2 rounded-full bg-[#D7B879] px-5 py-3 text-xs font-semibold uppercase tracking-wider text-[#142522] transition-colors hover:bg-[#E7D2A5]"
+            className="group mt-7 inline-flex items-center gap-2 rounded-full bg-[#B99A65] px-5 py-3 text-[10px] font-bold uppercase tracking-wider text-[#142522] transition-colors hover:bg-[#142522] hover:text-white"
           >
-            WhatsApp Enquiry <ArrowUpRight size={15} />
+            WhatsApp Enquiry <ArrowUpRight size={15} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
           </a>
         </div>
       </div>
 
-      {/* LEGAL + BOTTOM */}
-      <div className="border-t border-[#B99A5A]/20">
-        <div className="mx-auto max-w-7xl px-5 pt-4 sm:px-8 lg:px-12">
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 pb-4">
+      {/* ========================================================
+          LEGAL + BOTTOM BAR
+      ======================================================== */}
+      <div className="relative z-10 border-t border-[#142522]/10">
+        <div className="flex flex-col gap-4 px-6 py-6 sm:px-10 md:flex-row md:items-center md:justify-between lg:px-16">
+          
+          <p className="text-[11px] text-[#77766F]">
+            © {new Date().getFullYear()} Roop Vihar Resorts. All rights reserved.
+          </p>
+
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             {legal.map((item) => (
               <Link
                 key={item.href}
                 to={item.href}
-                className="text-[10px] uppercase tracking-[0.2em] text-[#F6F0E5]/50 hover:text-[#D7B879]"
+                className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[#77766F] hover:text-[#142522]"
               >
                 {item.label}
               </Link>
             ))}
           </div>
-        </div>
-      </div>
 
-      <div className="border-t border-[#B99A5A]/20">
-        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-6 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-12">
-          <p className="text-xs leading-6 text-[#F6F0E5]/55">
-            © {new Date().getFullYear()} Roop Vihar Resorts. All rights
-            reserved.
-          </p>
-          <p className="flex items-center gap-1.5 text-xs text-[#F6F0E5]/55">
-            Crafted with
-            <Heart size={12} className="fill-[#D7B879] text-[#D7B879]" />
-            for memorable experiences.
-          </p>
           <button
             type="button"
             onClick={scrollToTop}
             aria-label="Scroll to top"
-            className="group flex w-fit items-center gap-2 text-xs uppercase tracking-widest text-[#F6F0E5]/70 hover:text-[#D7B879]"
+            className="group flex w-fit items-center gap-2 text-[10px] font-bold uppercase tracking-[0.15em] text-[#77766F] hover:text-[#142522]"
           >
             Back to top
-            <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[#B99A5A]/40 transition-all group-hover:border-[#D7B879] group-hover:bg-[#D7B879] group-hover:text-[#142522]">
-              <ArrowUp size={15} />
+            <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#142522]/20 transition-all group-hover:border-[#142522] group-hover:bg-[#142522] group-hover:text-white">
+              <ArrowUp size={13} />
             </span>
           </button>
         </div>

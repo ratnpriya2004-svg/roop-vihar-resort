@@ -2,17 +2,24 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
-  ArrowUpRight,
-  MapPin,
-  Phone,
-  Mail,
-  Clock,
-  Send,
-  MessageCircle,
   X,
   CheckCircle2,
+  ArrowRight,
+  User,
+  Mail,
+  Phone,
+  CalendarDays,
+  Users,
+  MessageSquare,
+  MapPin,
+  ChevronDown,
+  Sparkles,
+  Clock,
+  ShieldCheck,
 } from "lucide-react";
-import { supabase } from "../../supabaseClient"; // Supabase import
+import { supabase } from "../../supabaseClient";
+
+import sideImage from "../../assets/images/look2.webp"; 
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -21,6 +28,8 @@ type ContactForm = {
   phone: string;
   email: string;
   enquiryType: string;
+  date: string;
+  guests: string;
   message: string;
 };
 
@@ -29,17 +38,10 @@ const initialForm: ContactForm = {
   phone: "",
   email: "",
   enquiryType: "Room Reservation",
+  date: "",
+  guests: "2 Adults",
   message: "",
 };
-
-const enquiryTypes = [
-  "Room Reservation",
-  "Wedding & Celebrations",
-  "Banquet & Events",
-  "Restaurant Enquiry",
-  "Corporate Enquiry",
-  "General Enquiry",
-];
 
 export default function Contact() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -47,8 +49,6 @@ export default function Contact() {
   const [form, setForm] = useState<ContactForm>(initialForm);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  
-  // Popup State
   const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
@@ -57,22 +57,32 @@ export default function Contact() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        section.querySelectorAll(".contact-reveal"),
-        { y: 30, opacity: 0 },
+      gsap.fromTo(".contact-anim-left",
+        { x: -50, opacity: 0, rotateY: 10 },
         {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          stagger: 0.12,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: section,
-            start: "top 82%",
-            once: true,
-          },
+          x: 0, opacity: 1, rotateY: 0, duration: 1.2, ease: "power4.out",
+          scrollTrigger: { trigger: section, start: "top 75%", once: true },
         }
       );
+      
+      gsap.fromTo(".contact-anim-right",
+        { x: 50, opacity: 0, rotateY: -10 },
+        {
+          x: 0, opacity: 1, rotateY: 0, duration: 1.2, ease: "power4.out",
+          scrollTrigger: { trigger: section, start: "top 75%", once: true },
+        }
+      );
+
+      gsap.to(".parallax-img", {
+        y: -50,
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
     }, section);
 
     return () => ctx.revert();
@@ -91,366 +101,240 @@ export default function Contact() {
     setError("");
     setLoading(true);
 
-    const name = form.name.trim();
-    const phone = form.phone.trim();
-    const email = form.email.trim();
-    const message = form.message.trim();
-
-    if (!name || !phone || !message) {
+    if (!form.name || !form.phone || !form.message) {
       setError("Please fill in all required fields.");
       setLoading(false);
       return;
     }
 
-    const normalizedPhone = phone.replace(/[\s()-]/g, "");
-    if (!/^\+?\d{10,15}$/.test(normalizedPhone)) {
-      setError("Please enter a valid phone number.");
+    if (form.email && !/\S+@\S+\.\S+/.test(form.email)) {
+      setError("Please enter a valid email address.");
       setLoading(false);
       return;
     }
 
-    if (email) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        setError("Please enter a valid email address.");
-        setLoading(false);
-        return;
-      }
-    }
-
-    // 1. SAVE TO SUPABASE
     const { error: dbError } = await supabase.from("enquiries").insert([
       {
-        name: name,
-        phone: phone,
-        email: email,
+        name: form.name,
+        phone: form.phone,
+        email: form.email,
         enquiry_type: form.enquiryType,
-        message: message,
+        message: `Date: ${form.date}, Guests: ${form.guests}. ${form.message}`,
       },
     ]);
 
     if (dbError) {
-      console.error("Database error:", dbError);
-      setError("Something went wrong while saving your message. Please try again.");
+      setError("Something went wrong. Please try again.");
       setLoading(false);
       return;
     }
 
-    // 2. SHOW SUCCESS POPUP
     setShowSuccess(true);
-    setForm(initialForm); // Reset form
+    setForm(initialForm);
     setLoading(false);
   };
 
-  // Optional WhatsApp click from popup
-  const handleWhatsAppOptional = () => {
-    const text = encodeURIComponent(
-      `Hello Roop Vihar Resorts,\n\nName: ${form.name || "A guest"}\nI just submitted a contact form on your website.`
-    );
-    window.open(`https://wa.me/919801897235?text=${text}`, "_blank", "noopener,noreferrer");
-  };
-
   const inputClass =
-    "w-full rounded-xl border border-[#DED8CB] bg-white px-4 py-3.5 text-sm text-[#203A30] outline-none transition-all duration-300 placeholder:text-[#A6A093] focus:border-[#B99A5B] focus:ring-2 focus:ring-[#B99A5B]/15 disabled:opacity-50";
+    "w-full rounded-xl border border-[#EAE5DC] bg-[#FBF8F2] py-4 pl-12 pr-4 text-[14px] text-[#142522] outline-none transition-all placeholder:text-[#A0A0A0] hover:border-[#B99A65]/50 focus:border-[#B99A65] focus:bg-white focus:ring-4 focus:ring-[#B99A65]/10 shadow-sm";
+  const labelClass = "mb-2 block text-[11px] font-bold uppercase tracking-wider text-[#77766F]";
+  const iconClass = "absolute left-4 top-[44px] text-[#B99A65]";
 
   return (
     <section
       id="contact"
       ref={sectionRef}
-      className="relative isolate overflow-hidden bg-[#F6F2E9] py-20 sm:py-24 lg:py-32"
+      className="relative w-full overflow-hidden bg-[#F6F0E5] py-20 lg:py-28 [perspective:1000px]"
     >
-      {/* Background Decorations */}
-      <div aria-hidden="true" className="pointer-events-none absolute -right-32 top-20 h-80 w-80 rounded-full border border-[#B99A5B]/15" />
-      <div aria-hidden="true" className="pointer-events-none absolute -right-20 top-32 h-56 w-56 rounded-full border border-[#B99A5B]/15" />
-
-      <div className="relative mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
-        {/* Section Heading */}
-        <div className="contact-reveal mx-auto mb-14 max-w-3xl text-center lg:mb-20">
-          <span className="mb-4 inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.3em] text-[#9C7D43]">
-            <span className="h-px w-8 bg-[#B99A5B]" />
-            Get in Touch
-            <span className="h-px w-8 bg-[#B99A5B]" />
-          </span>
-
-          <h2 className="font-serif text-4xl leading-tight text-[#183D30] sm:text-5xl lg:text-6xl">
-            Let Us Make Your
-            <br />
-            <span className="italic text-[#9C7D43]">Moments Special</span>
+      <div className="pointer-events-none absolute left-0 top-0 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#B99A65]/10 blur-[100px]" />
+      
+      <div className="relative z-10 mx-auto max-w-[1280px] px-5 sm:px-8">
+        
+        {/* HEADER */}
+        <div className="mb-14 flex flex-col items-center text-center">
+          <div className="contact-anim-left mb-5 inline-flex items-center gap-2 rounded-full border border-[#B99A65]/30 bg-white/50 px-4 py-1.5 backdrop-blur-md">
+            <Sparkles size={12} className="text-[#B99A65]" />
+            <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#B99A65]">
+              Get In Touch
+            </span>
+          </div>
+          
+          <h2 className="contact-anim-left font-serif text-[clamp(2.5rem,5vw,4rem)] leading-[1.1] tracking-tight text-[#142522]">
+            Plan Your <span className="italic text-[#B99A65]">Perfect Escape</span>
           </h2>
-
-          <p className="mx-auto mt-6 max-w-xl text-sm leading-7 text-[#6E7067] sm:text-base">
-            Planning a relaxing stay, a grand celebration or a memorable
-            dining experience? We would love to hear from you.
+          
+          <p className="contact-anim-left mt-4 max-w-xl text-sm leading-relaxed text-[#77766F]">
+            Whether it's a relaxing getaway or a grand celebration, our team is here to ensure every detail is taken care of.
           </p>
         </div>
 
-        {/* Contact Grid */}
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
+        {/* MAIN GRID */}
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:gap-14">
           
-          {/* Left Information Panel */}
-          <div className="contact-reveal">
-            <div className="rounded-3xl bg-[#183D30] p-7 text-[#F7F2E8] sm:p-9 lg:p-10">
-              <span className="text-xs uppercase tracking-[0.25em] text-[#D7B879]">
-                We Are Here For You
-              </span>
-
-              <h3 className="mt-4 font-serif text-3xl leading-snug sm:text-4xl">
-                Let&apos;s Start
-                <br />
-                a Conversation.
-              </h3>
-
-              <p className="mt-5 text-sm leading-7 text-white/65">
-                Our team is ready to help you with room enquiries, event
-                planning, celebrations and restaurant information.
-              </p>
-
-              <div className="my-8 h-px bg-white/15" />
-
-              {/* Address */}
-              <a
-                href="https://www.google.com/maps/search/?api=1&query=Roop+Vihar+Resorts+Barari+Bhagalpur+Bihar"
-                target="_blank"
-                rel="noreferrer"
-                className="group flex items-start gap-4"
-              >
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#D7B879]/40 text-[#D7B879] transition-colors group-hover:bg-[#D7B879] group-hover:text-[#183D30]">
-                  <MapPin size={19} />
-                </span>
-
-                <span>
-                  <span className="block text-sm font-medium">Our Location</span>
-                  <span className="mt-2 block text-sm leading-6 text-white/60">
-                    R. H. Lane, Barari,
-                    <br />
-                    Bhagalpur, Bihar - 812003
-                  </span>
-                  <span className="mt-2 inline-flex items-center gap-1 text-xs text-[#D7B879]">
-                    Get Directions
-                    <ArrowUpRight size={13} />
-                  </span>
-                </span>
-              </a>
-
-              {/* Phone */}
-              <div className="mt-7 flex items-start gap-4">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#D7B879]/40 text-[#D7B879]">
-                  <Phone size={18} />
-                </span>
-                <div>
-                  <p className="text-sm font-medium">Call Us</p>
-                  <a href="tel:+917631005599" className="mt-2 block text-sm text-white/65 transition-colors hover:text-[#D7B879]">
-                    +91 76310 05599
-                  </a>
-                  <a href="tel:+919801897235" className="mt-1 block text-sm text-white/65 transition-colors hover:text-[#D7B879]">
-                    +91 98018 97235
-                  </a>
+          {/* LEFT: CONTACT FORM CARD */}
+          <div className="contact-anim-left rounded-[2rem] border border-white/60 bg-white/90 p-6 shadow-[0_20px_60px_-15px_rgba(20,37,34,0.1)] backdrop-blur-xl sm:p-10">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+              
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                <div className="relative">
+                  <label className={labelClass} htmlFor="name">Full Name</label>
+                  <User size={18} className={iconClass} />
+                  <input id="name" type="text" name="name" value={form.name} onChange={handleChange} placeholder="Your full name" className={inputClass} required />
+                </div>
+                <div className="relative">
+                  <label className={labelClass} htmlFor="email">Email Address</label>
+                  <Mail size={18} className={iconClass} />
+                  <input id="email" type="email" name="email" value={form.email} onChange={handleChange} placeholder="you@example.com" className={inputClass} />
                 </div>
               </div>
 
-              {/* Email */}
-              <div className="mt-7 flex items-start gap-4">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#D7B879]/40 text-[#D7B879]">
-                  <Mail size={18} />
-                </span>
-                <div>
-                  <p className="text-sm font-medium">Email Us</p>
-                  <a href="mailto:info@roopviharresorts.com" className="mt-2 block break-all text-sm text-white/65 transition-colors hover:text-[#D7B879]">
-                    info@roopviharresorts.com
-                  </a>
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                <div className="relative">
+                  <label className={labelClass} htmlFor="phone">Phone Number</label>
+                  <Phone size={18} className={iconClass} />
+                  <input id="phone" type="tel" name="phone" value={form.phone} onChange={handleChange} placeholder="+91 90000 00000" className={inputClass} required />
+                </div>
+                <div className="relative">
+                  <label className={labelClass} htmlFor="enquiryType">Select Your Tour</label>
+                  <Users size={18} className={iconClass} />
+                  <select id="enquiryType" name="enquiryType" value={form.enquiryType} onChange={handleChange} className={`${inputClass} appearance-none cursor-pointer`}>
+                    <option>Room Reservation</option>
+                    <option>Wedding Celebration</option>
+                    <option>Banquet Hall</option>
+                    <option>Birthday Celebration</option>
+                    <option>Corporate Event</option>
+                    <option>Restaurant Enquiry</option>
+                    <option>General Enquiry</option>
+                  </select>
+                  <ChevronDown size={18} className="absolute right-4 top-[44px] text-[#A0A0A0] pointer-events-none" />
                 </div>
               </div>
 
-              {/* Timings */}
-              <div className="mt-7 flex items-start gap-4">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#D7B879]/40 text-[#D7B879]">
-                  <Clock size={18} />
-                </span>
-                <div>
-                  <p className="text-sm font-medium">Stay Timings</p>
-                  <p className="mt-2 text-sm leading-6 text-white/65">
-                    Check-in: 12:00 PM
-                    <br />
-                    Check-out: 11:00 AM
-                  </p>
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                <div className="relative">
+                  <label className={labelClass} htmlFor="date">Preferred Date</label>
+                  <CalendarDays size={18} className={iconClass} />
+                  <input id="date" type="date" name="date" value={form.date} onChange={handleChange} className={`${inputClass} text-[#77766F]`} />
+                </div>
+                <div className="relative">
+                  <label className={labelClass} htmlFor="guests">Number of Travellers</label>
+                  <Users size={18} className={iconClass} />
+                  <select id="guests" name="guests" value={form.guests} onChange={handleChange} className={`${inputClass} appearance-none cursor-pointer`}>
+                    <option>1 Adult</option>
+                    <option>2 Adults</option>
+                    <option>3 Adults</option>
+                    <option>4 Adults</option>
+                    <option>5+ Adults</option>
+                  </select>
+                  <ChevronDown size={18} className="absolute right-4 top-[44px] text-[#A0A0A0] pointer-events-none" />
                 </div>
               </div>
 
-              {/* WhatsApp Button */}
-              <a
-                href="https://wa.me/919801897235?text=Hello%20Roop%20Vihar%20Resorts%2C%20I%20would%20like%20to%20make%20an%20enquiry."
-                target="_blank"
-                rel="noreferrer"
-                className="mt-9 flex w-full items-center justify-center gap-3 rounded-full bg-[#D7B879] px-6 py-4 text-sm font-semibold text-[#183D30] transition-all duration-300 hover:bg-[#E9D4A6]"
-              >
-                <MessageCircle size={19} />
-                Chat on WhatsApp
-                <ArrowUpRight size={16} />
-              </a>
-            </div>
-          </div>
-
-          {/* Right Form Panel */}
-          <div className="contact-reveal rounded-3xl border border-[#E5DFD3] bg-white p-6 shadow-[0_20px_70px_rgba(24,61,48,0.06)] sm:p-9 lg:p-10">
-            <div className="mb-8">
-              <span className="text-xs font-semibold uppercase tracking-[0.22em] text-[#9C7D43]">
-                Send an Enquiry
-              </span>
-              <h3 className="mt-3 font-serif text-3xl text-[#183D30] sm:text-4xl">
-                How Can We Help?
-              </h3>
-              <p className="mt-3 text-sm leading-6 text-[#77786F]">
-                Fill in your details below. Our team will get back to you as soon as possible.
-              </p>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-5">
-              {/* Name + Phone */}
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                <div>
-                  <label htmlFor="contact-name" className="mb-2 block text-sm font-medium text-[#314438]">
-                    Full Name <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    id="contact-name"
-                    name="name"
-                    type="text"
-                    required
-                    disabled={loading}
-                    placeholder="Your full name"
-                    value={form.name}
-                    onChange={handleChange}
-                    className={inputClass}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="contact-phone" className="mb-2 block text-sm font-medium text-[#314438]">
-                    Phone Number <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    id="contact-phone"
-                    name="phone"
-                    type="tel"
-                    required
-                    disabled={loading}
-                    placeholder="+91 XXXXX XXXXX"
-                    value={form.phone}
-                    onChange={handleChange}
-                    className={inputClass}
-                  />
-                </div>
+              <div className="relative">
+                <label className={labelClass} htmlFor="message">Special Requests</label>
+                <MessageSquare size={18} className="absolute left-4 top-12 text-[#B99A65]" />
+                <textarea id="message" name="message" value={form.message} onChange={handleChange} rows={4} placeholder="Anything else we should know?" className={`${inputClass} resize-none pt-4`} required />
               </div>
 
-              {/* Email */}
-              <div>
-                <label htmlFor="contact-email" className="mb-2 block text-sm font-medium text-[#314438]">
-                  Email Address (Optional)
-                </label>
-                <input
-                  id="contact-email"
-                  name="email"
-                  type="email"
+              {error && <p className="text-xs font-semibold text-red-600">{error}</p>}
+
+              <div className="mt-2">
+                <button
+                  type="submit"
                   disabled={loading}
-                  placeholder="you@example.com"
-                  value={form.email}
-                  onChange={handleChange}
-                  className={inputClass}
-                />
-              </div>
-
-              {/* Enquiry Type */}
-              <div>
-                <label htmlFor="contact-enquiry-type" className="mb-2 block text-sm font-medium text-[#314438]">
-                  What Are You Interested In?
-                </label>
-                <select
-                  id="contact-enquiry-type"
-                  name="enquiryType"
-                  disabled={loading}
-                  value={form.enquiryType}
-                  onChange={handleChange}
-                  className={inputClass}
+                  className="group relative flex w-full items-center justify-between overflow-hidden rounded-xl bg-[#142522] py-4 pl-6 pr-3 text-[12px] font-bold uppercase tracking-[0.15em] text-white transition-all duration-300 hover:bg-[#25302E] disabled:opacity-70"
                 >
-                  {enquiryTypes.map((type) => (
-                    <option key={type} value={type}>{type}</option>
-                  ))}
-                </select>
+                  <span className="relative z-10">{loading ? "Sending..." : "Reserve Your Spot"}</span>
+                  <span className="relative z-10 flex h-8 w-8 items-center justify-center rounded-lg bg-[#B99A65] text-[#142522] transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
+                    <ArrowRight size={16} strokeWidth={2.5} />
+                  </span>
+                </button>
               </div>
-
-              {/* Message */}
-              <div>
-                <label htmlFor="contact-message" className="mb-2 block text-sm font-medium text-[#314438]">
-                  Your Message <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  id="contact-message"
-                  name="message"
-                  rows={5}
-                  required
-                  disabled={loading}
-                  placeholder="Tell us about your plans..."
-                  value={form.message}
-                  onChange={handleChange}
-                  className={`${inputClass} resize-y`}
-                />
-              </div>
-
-              {error && (
-                <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
-              )}
-
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={loading}
-                className="group flex w-full items-center justify-center gap-3 rounded-full bg-[#183D30] px-6 py-4 text-sm font-semibold text-white transition-all duration-300 hover:bg-[#245542] disabled:cursor-wait disabled:opacity-70"
-              >
-                {loading ? "Sending..." : "Contact Us"}
-                <Send size={17} className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-0.5" />
-              </button>
             </form>
           </div>
+
+          {/* RIGHT: CREATIVE IMAGE + INFO PANEL (No external links) */}
+          <div className="contact-anim-right relative group flex flex-col overflow-hidden rounded-[2rem] border border-white/60 bg-white/50 shadow-[0_20px_60px_-15px_rgba(20,37,34,0.1)]">
+            
+            {/* Image Section */}
+            <div className="relative h-[280px] w-full overflow-hidden sm:h-[350px]">
+              <img 
+                src={sideImage} 
+                alt="Roop Vihar Resort" 
+                className="parallax-img absolute inset-0 h-[120%] w-full object-cover transition-transform duration-700 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#142522]/80 via-[#142522]/20 to-transparent" />
+              
+              {/* Glass Badge */}
+              <div className="absolute left-6 top-6 z-10 flex items-center gap-2 rounded-full border border-white/40 bg-black/40 px-4 py-2 backdrop-blur-md">
+                <ShieldCheck size={14} className="text-[#B99A65]" />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-white">Verified Location</span>
+              </div>
+
+              {/* Overlay Text */}
+              <div className="absolute bottom-6 left-6 right-6 z-10">
+                <h3 className="font-serif text-3xl text-white">Roop Vihar Resorts</h3>
+                <p className="mt-1 text-sm text-white/80">Bhagalpur, Bihar, India</p>
+              </div>
+            </div>
+
+            {/* Info Section */}
+            <div className="flex flex-1 flex-col justify-center p-6 sm:p-8">
+              <div className="space-y-4">
+                <div className="flex items-start gap-4">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#FBF8F2] text-[#B99A65]">
+                    <MapPin size={18} />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-[#142522]">Our Address</h4>
+                    <p className="mt-1 text-xs leading-relaxed text-[#77766F]">R. H. Lane, Barari, Bhagalpur, Bihar - 812003</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#FBF8F2] text-[#B99A65]">
+                    <Clock size={18} />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-[#142522]">Front Desk Hours</h4>
+                    <p className="mt-1 text-xs leading-relaxed text-[#77766F]">Open 24/7 for our esteemed guests.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#FBF8F2] text-[#B99A65]">
+                    <Phone size={18} />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-[#142522]">Call Us</h4>
+                    <p className="mt-1 text-xs leading-relaxed text-[#77766F]">+91 76310 05599</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
       </div>
 
-      {/* =========================================
-          SUCCESS POPUP MODAL
-      ========================================= */}
       {showSuccess && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#142522]/80 px-4 backdrop-blur-sm">
-          <div className="relative w-full max-w-md overflow-hidden rounded-3xl bg-[#FBF8F2] p-8 text-center shadow-2xl sm:p-10">
-            
-            <button 
-              onClick={() => setShowSuccess(false)}
-              className="absolute right-4 top-4 text-[#62716D] hover:text-[#142522]"
-            >
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm">
+          <div className="relative w-full max-w-sm rounded-2xl bg-white p-8 text-center shadow-2xl">
+            <button onClick={() => setShowSuccess(false)} className="absolute right-4 top-4 text-gray-400 hover:text-black">
               <X size={20} />
             </button>
 
-            <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-100 text-green-600">
-              <CheckCircle2 size={40} />
+            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-green-50 text-green-500">
+              <CheckCircle2 size={32} />
             </div>
 
-            <h2 className="font-serif text-3xl text-[#142522]">Message Sent!</h2>
-            <p className="mt-3 text-sm leading-7 text-[#62716D]">
-              Thank you for reaching out to Roop Vihar Resorts. Our team has received your enquiry and will contact you shortly.
+            <h2 className="font-serif text-2xl text-[#142522]">Message Sent!</h2>
+            <p className="mt-3 text-[13px] leading-relaxed text-[#77766F]">
+              Thank you for reaching out. Our team will contact you shortly.
             </p>
 
-            <div className="mt-8 space-y-3">
-              <button
-                onClick={handleWhatsAppOptional}
-                className="flex w-full items-center justify-center gap-2 rounded-full bg-[#25D366] py-4 text-xs font-medium uppercase tracking-[0.2em] text-white transition hover:bg-[#1EBE5D]"
-              >
-                <MessageCircle size={18} />
-                Chat on WhatsApp (Optional)
-              </button>
-              <button
-                onClick={() => setShowSuccess(false)}
-                className="w-full rounded-full border border-[#D8D0C1] py-3.5 text-xs font-medium text-[#62716D] transition hover:bg-gray-50"
-              >
-                Close
-              </button>
-            </div>
+            <button onClick={() => setShowSuccess(false)} className="mt-8 w-full rounded-xl bg-[#142522] py-3 text-[11px] font-bold uppercase tracking-widest text-white transition hover:bg-black">
+              Close
+            </button>
           </div>
         </div>
       )}

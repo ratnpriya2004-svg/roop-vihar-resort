@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "./supabaseClient";
+import ScrollToTop from "./Components/ScrollToTop"; // <--- Import karein
 
 // Public Pages
 import Home from "./Components/Home";
@@ -27,6 +28,16 @@ import AdminOverview from "./admin/AdminOverview";
 import AdminRooms from "./admin/AdminRooms";
 import AdminBookings from "./admin/AdminBookings";
 import AdminEnquiries from "./admin/AdminEnquiries";
+
+// Root Layout for Public Pages
+function RootLayout() {
+  return (
+    <>
+      <ScrollToTop />
+      <Outlet />
+    </>
+  );
+}
 
 // Protected Route Wrapper
 function ProtectedRoute() {
@@ -56,24 +67,33 @@ function ProtectedRoute() {
 }
 
 export const router = createBrowserRouter([
-  // PUBLIC ROUTES
-  { path: "/", element: <Home /> },
-  { path: "/about", element: <About /> },
-  { path: "/rooms", element: <Rooms /> },
-  { path: "/rooms/:slug", element: <RoomDetail /> },
-  { path: "/bookings", element: <Booking /> },
-  { path: "/weddings", element: <Weddings /> },
-  { path: "/events", element: <Events /> },
-  { path: "/venues/:slug", element: <VenueDetail /> },
-  { path: "/dining", element: <DiningPage /> },
-  { path: "/gallery", element: <Gallery /> },
-  { path: "/contact", element: <ContactPage /> },
-  { path: "/faq", element: <FAQ /> },
-  { path: "/privacy", element: <Privacy /> },
-  { path: "/terms", element: <Terms /> },
-  { path: "/cancellation", element: <Cancellation /> },
+  {
+    // Yahan RootLayout laga diya hai taaki ScrollToTop sab par kaam kare
+    element: <RootLayout />, 
+    children: [
+      // PUBLIC ROUTES
+      { path: "/", element: <Home /> },
+      { path: "/about", element: <About /> },
+      { path: "/rooms", element: <Rooms /> },
+      { path: "/rooms/:slug", element: <RoomDetail /> },
+      { path: "/bookings", element: <Booking /> },
+      { path: "/weddings", element: <Weddings /> },
+      { path: "/events", element: <Events /> },
+      { path: "/venues/:slug", element: <VenueDetail /> },
+      { path: "/dining", element: <DiningPage /> },
+      { path: "/gallery", element: <Gallery /> },
+      { path: "/contact", element: <ContactPage /> },
+      { path: "/faq", element: <FAQ /> },
+      { path: "/privacy", element: <Privacy /> },
+      { path: "/terms", element: <Terms /> },
+      { path: "/cancellation", element: <Cancellation /> },
 
-  // ADMIN ROUTES
+      // 404
+      { path: "*", element: <NotFound /> },
+    ],
+  },
+  
+  // ADMIN ROUTES (Admin ke liye ScrollToTop nahi chahiye, isliye alag rakha hai)
   { path: "/admin", element: <AdminLogin /> },
   {
     path: "/admin/dashboard",
@@ -90,6 +110,4 @@ export const router = createBrowserRouter([
       },
     ],
   },
-
-  { path: "*", element: <NotFound /> },
 ]);

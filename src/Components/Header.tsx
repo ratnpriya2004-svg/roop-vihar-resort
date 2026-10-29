@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ArrowUpRight, Menu, X, ChevronDown } from "lucide-react";
 import brandIcon from "../assets/images/icon.webp";
 
@@ -59,7 +59,9 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Scroll detection (throttled)
   useEffect(() => {
@@ -100,6 +102,20 @@ export default function Header() {
     };
   }, [open]);
 
+  // ✅ HOME BUTTON LOGIC FIX
+  const handleHomeClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault(); // Default link behavior roko
+    setOpen(false); // Mobile menu band karo
+    
+    if (location.pathname === "/") {
+      // Agar pehle se Home page par hain, toh smoothly top par scroll karo
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      // Agar kisi aur page par hain, toh Home page par navigate karo
+      navigate("/");
+    }
+  };
+
   const isHome = location.pathname === "/";
   const solid = scrolled || !isHome;
 
@@ -115,6 +131,7 @@ export default function Header() {
         {/* ============ BRAND ============ */}
         <Link
           to="/"
+          onClick={handleHomeClick} // ✅ Brand Logo click par bhi Home fix
           aria-label="Roop Vihar Resorts home"
           className="group flex shrink-0 items-center gap-3"
         >
@@ -153,6 +170,9 @@ export default function Header() {
                   location.pathname.startsWith(c.href.split("#")[0])
                 ));
 
+            // ✅ Home Nav item ke liye custom onClick
+            const isHomeItem = item.label === "HOME";
+
             return (
               <div
                 key={item.href}
@@ -164,6 +184,7 @@ export default function Header() {
               >
                 <Link
                   to={item.href}
+                  onClick={isHomeItem ? handleHomeClick : undefined} // ✅ Home fix
                   className={`group relative inline-flex items-center gap-1 whitespace-nowrap px-3 py-2 text-[10px] tracking-[0.18em] transition-colors ${
                     solid
                       ? isActive
@@ -254,35 +275,38 @@ export default function Header() {
         }`}
       >
         <div className="px-6 py-3">
-          {navigation.map((item) => (
-            <div
-              key={item.href}
-              className="border-b border-[#B99A65]/15 last:border-b-0"
-            >
-              <Link
-                to={item.href}
-                onClick={() => setOpen(false)}
-                className="flex items-center justify-between py-3 text-[11px] tracking-[0.18em] text-[#25302E] hover:text-[#8D744A]"
+          {navigation.map((item) => {
+            const isHomeItem = item.label === "HOME";
+            return (
+              <div
+                key={item.href}
+                className="border-b border-[#B99A65]/15 last:border-b-0"
               >
-                {item.label}
-                <ArrowUpRight size={15} />
-              </Link>
-              {item.children && (
-                <div className="pb-3 pl-4">
-                  {item.children.map((child) => (
-                    <Link
-                      key={child.href}
-                      to={child.href}
-                      onClick={() => setOpen(false)}
-                      className="flex items-center justify-between border-l border-[#B99A65]/30 py-2 pl-3 text-[10px] tracking-[0.14em] text-[#62716D] hover:text-[#8D744A]"
-                    >
-                      {child.label}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
+                <Link
+                  to={item.href}
+                  onClick={isHomeItem ? handleHomeClick : () => setOpen(false)} // ✅ Mobile Home fix
+                  className="flex items-center justify-between py-3 text-[11px] tracking-[0.18em] text-[#25302E] hover:text-[#8D744A]"
+                >
+                  {item.label}
+                  <ArrowUpRight size={15} />
+                </Link>
+                {item.children && (
+                  <div className="pb-3 pl-4">
+                    {item.children.map((child) => (
+                      <Link
+                        key={child.href}
+                        to={child.href}
+                        onClick={() => setOpen(false)}
+                        className="flex items-center justify-between border-l border-[#B99A65]/30 py-2 pl-3 text-[10px] tracking-[0.14em] text-[#62716D] hover:text-[#8D744A]"
+                      >
+                        {child.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
           <Link
             to="/bookings"
             onClick={() => setOpen(false)}

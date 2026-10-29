@@ -1,24 +1,98 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowLeft, ArrowRight, ArrowUpRight, BedDouble, UsersRound, Sparkles } from "lucide-react";
+import { 
+  ArrowRight, 
+  Users, 
+  Maximize, 
+  BedDouble, 
+  Eye, 
+  ChevronLeft, 
+  ChevronRight,
+  Sparkles,
+  Coffee,
+  Trees,
+  Heart
+} from "lucide-react";
 
-import luxuryRoom from "../../assets/images/img_1 (2).webp";
-import dulexyRoom from "../../assets/images/img_1 (3).webp";
-import corporateroom from "../../assets/images/img_3 (2).webp";
+// ==========================================
+// YAHAN APNI IMAGES IMPORT KAREIN (Total 12 Images)
+// ==========================================
+
+// Standard Room Images (4)
+import stdImg1 from "../../assets/images/img_1 (4).webp";
+import stdImg2 from "../../assets/images/normal.webp";
+import stdImg3 from "../../assets/images/normal2.webp";
+import stdImg4 from "../../assets/images/normal3.webp";
+
+// Deluxe Room Images (4)
+import dlxImg1 from "../../assets/images/room10.webp";
+import dlxImg2 from "../../assets/images/room11.webp";
+import dlxImg3 from "../../assets/images/room12.webp";
+import dlxImg4 from "../../assets/images/room13.webp";
+
+// Suite Room Images (4)
+import steImg1 from "../../assets/images/suit.webp";
+import steImg2 from "../../assets/images/suit.webp";
+import steImg3 from "../../assets/images/suit2.webp";
+import steImg4 from "../../assets/images/suit.webp";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const rooms = [
-  { name: "Standard Room", tag: "Comfort", rate: "₹2,499", guests: "Up to 2 guests", image: luxuryRoom, alt: "Standard room", note: "Comfort-led interiors.", number: "01" },
-  { name: "Deluxe Room", tag: "A Little More", rate: "₹2,799", guests: "Up to 2 guests", image: dulexyRoom, alt: "Deluxe room", note: "Refined details.", number: "02" },
-  { name: "Suite", tag: "Space to Settle", rate: "₹3,099", guests: "Up to 3 guests", image: corporateroom, alt: "Suite", note: "Extra space, extra calm.", number: "03" },
+const roomsData = [
+  {
+    id: "standard",
+    name: "Standard Room",
+    rate: "₹2,499",
+    guests: "2 Guests",
+    size: "30 ft",
+    bed: "King Bed",
+    view: "Garden View",
+    desc: "A comfortable and well-furnished room ideal for short stays and budget-conscious travellers.",
+    images: [stdImg1, stdImg2, stdImg3, stdImg4],
+  },
+  {
+    id: "deluxe",
+    name: "Deluxe Room",
+    rate: "₹2,799",
+    guests: "2 Guests",
+    size: "35 ft",
+    bed: "King Bed",
+    view: "City View",
+    desc: "Enhanced space, elegant interiors, and modern comforts perfect for leisure or business travel.",
+    images: [dlxImg1, dlxImg2, dlxImg3, dlxImg4],
+  },
+  {
+    id: "suite",
+    name: "Suite",
+    rate: "₹3,099",
+    guests: "3 Guests",
+    size: "40 ft",
+    bed: "King Bed",
+    view: "Lawn View",
+    desc: "Spacious and serene family suite with a separate living area, ideal for guests travelling with family.",
+    images: [steImg1, steImg2, steImg3, steImg4],
+  },
+];
+
+const amenities = [
+  { icon: Sparkles, label: "Modern Amenities" },
+  { icon: Coffee, label: "Relaxing Ambience" },
+  { icon: Trees, label: "Scenic Surroundings" },
+  { icon: Heart, label: "Perfect for Families" },
 ];
 
 export default function Stays() {
   const sectionRef = useRef<HTMLElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
+  const [activeTab, setActiveTab] = useState(0);
+  const [activeImgIndex, setActiveImgIndex] = useState(0);
+
+  const currentRoom = roomsData[activeTab];
+
+  useEffect(() => {
+    setActiveImgIndex(0);
+  }, [activeTab]);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -26,121 +100,190 @@ export default function Stays() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const ctx = gsap.context(() => {
-      gsap.fromTo(".stays-reveal", 
-        { y: 35, opacity: 0 }, 
+      gsap.fromTo(".stays-reveal",
+        { y: 30, opacity: 0 },
         {
-          y: 0, opacity: 1, duration: 0.9, stagger: 0.12, ease: "power3.out",
+          y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power3.out",
           scrollTrigger: { trigger: section, start: "top 80%", once: true },
         }
       );
 
-      gsap.fromTo(".stay-card", 
-        { y: 55, opacity: 0 }, 
+      gsap.fromTo(".stays-image-reveal",
+        { clipPath: "inset(0 0 100% 0)", scale: 1.05 },
         {
-          y: 0, opacity: 1, duration: 1, stagger: 0.16, ease: "power3.out",
-          scrollTrigger: { trigger: trackRef.current, start: "top 85%", once: true },
-        }
-      );
-
-      gsap.fromTo(".stays-gold-line", 
-        { scaleX: 0, transformOrigin: "left center" }, 
-        {
-          scaleX: 1, duration: 1.2, ease: "power3.inOut",
+          clipPath: "inset(0 0 0% 0)", scale: 1, duration: 1.2, ease: "power4.inOut",
           scrollTrigger: { trigger: section, start: "top 75%", once: true },
         }
       );
-
-      section.querySelectorAll<HTMLImageElement>(".stay-image").forEach((img) => {
-        gsap.fromTo(img, 
-          { scale: 1.15 }, 
-          {
-            scale: 1, duration: 1.4, ease: "power3.out",
-            scrollTrigger: { trigger: img, start: "top 90%", once: true },
-          }
-        );
-      });
-
-      gsap.to(".stays-orbit", { rotation: 25, duration: 25, repeat: -1, ease: "none" });
     }, section);
 
     return () => ctx.revert();
   }, []);
 
-  const scrollCards = (dir: "left" | "right") => {
-    const track = trackRef.current;
-    if (!track) return;
-    const first = track.querySelector<HTMLElement>(".stay-card");
-    const dist = first ? first.getBoundingClientRect().width + 24 : track.clientWidth;
-    track.scrollBy({ left: dir === "right" ? dist : -dist, behavior: "smooth" });
+  const handleTabChange = (index: number) => {
+    if (index === activeTab) return;
+    gsap.to(".tab-content-anim", {
+      y: 10, opacity: 0, duration: 0.2, ease: "power2.in",
+      onComplete: () => {
+        setActiveTab(index);
+        gsap.fromTo(".tab-content-anim", 
+          { y: -10, opacity: 0 }, 
+          { y: 0, opacity: 1, duration: 0.4, ease: "power2.out" }
+        );
+      }
+    });
   };
 
+  const handlePrevImage = () => setActiveImgIndex((prev) => (prev === 0 ? currentRoom.images.length - 1 : prev - 1));
+  const handleNextImage = () => setActiveImgIndex((prev) => (prev === currentRoom.images.length - 1 ? 0 : prev + 1));
+
   return (
-    <section ref={sectionRef} id="rooms" className="relative isolate overflow-hidden py-20 text-[#25302E] sm:py-24 lg:py-28">
-      <div className="gold-grid-bg pointer-events-none absolute inset-0 opacity-30" />
-      <div aria-hidden="true" className="stays-orbit pointer-events-none absolute -right-40 top-10 h-[380px] w-[380px] rounded-full border border-[#B99A65]/20 sm:h-[520px] sm:w-[520px]" />
-      <div aria-hidden="true" className="pointer-events-none absolute -left-32 bottom-0 h-80 w-80 rounded-full bg-[#B99A65]/10 blur-[100px]" />
-
-      <div className="relative mx-auto max-w-[1600px] px-5 sm:px-8 lg:px-14 xl:px-20">
-        <div className="mb-10 grid gap-6 sm:mb-14 lg:mb-16 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:gap-16">
+    <section ref={sectionRef} id="rooms" className="relative flex min-h-[100vh] w-full flex-col justify-center overflow-hidden bg-[#F6F0E5] py-20 lg:py-24">
+      
+      <div className="relative mx-auto w-full max-w-[1300px] px-6 sm:px-8 lg:px-12">
+        
+        {/* HEADER */}
+        <div className="stays-reveal mb-10 flex flex-col justify-between gap-6 lg:mb-14 lg:flex-row lg:items-end">
           <div>
-            <div className="stays-reveal mb-5 flex items-center gap-3">
-              <span className="h-px w-10 bg-[#B99A65] sm:w-12" />
-              <span className="text-[10px] font-medium uppercase tracking-[0.32em] text-[#8D744A] sm:text-xs">Discover Your Stay</span>
-              <Sparkles size={14} className="text-[#B99A65]" />
+            <div className="mb-3 flex items-center gap-2">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#142522] text-[10px] text-white">01</span>
+              <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#B99A65]">Interactive Tabs</span>
             </div>
-            <h2 className="stays-reveal max-w-4xl font-serif text-[clamp(2.6rem,6.5vw,6rem)] leading-[1.02] tracking-tight">
-              Rooms for <br /><span className="italic text-[#B99A65]">every moment.</span>
+            <h2 className="font-serif text-[clamp(2.8rem,4.5vw,5rem)] leading-[1.1] text-[#142522]">
+              Find Your <br className="hidden lg:block"/> 
+              <span className="italic text-[#B99A65]">Perfect Stay</span>
             </h2>
-            <div className="stays-gold-line mt-6 h-[2px] w-24 bg-[#B99A65] sm:mt-8 sm:w-32" />
           </div>
+          <p className="max-w-[280px] text-[13px] leading-6 text-[#62716D] lg:pb-3">
+            Discover our thoughtfully designed rooms, crafted for comfort, relaxation, and unforgettable moments.
+          </p>
         </div>
 
-        <div className="stays-reveal mb-6 flex items-end justify-between gap-4 sm:mb-8">
-          <p className="font-serif text-2xl sm:text-3xl">Our accommodation</p>
-          <div className="flex shrink-0 gap-2">
-            <button type="button" onClick={() => scrollCards("left")} aria-label="Previous" className="flex h-10 w-10 items-center justify-center border border-[#B99A65]/50 transition-all hover:border-[#192824] hover:bg-[#192824] hover:text-white sm:h-12 sm:w-12">
-              <ArrowLeft size={18} />
-            </button>
-            <button type="button" onClick={() => scrollCards("right")} aria-label="Next" className="flex h-10 w-10 items-center justify-center border border-[#B99A65]/50 transition-all hover:border-[#192824] hover:bg-[#192824] hover:text-white sm:h-12 sm:w-12">
-              <ArrowRight size={18} />
-            </button>
-          </div>
-        </div>
+        {/* MAIN GRID */}
+        <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
+          
+          {/* LEFT SIDE: INFO */}
+          <div className="flex flex-col justify-center">
+            
+            {/* Tabs */}
+            <div className="stays-reveal mb-8 flex flex-wrap gap-2 sm:gap-3">
+              {roomsData.map((room, idx) => (
+                <button
+                  key={room.id}
+                  onClick={() => handleTabChange(idx)}
+                  className={`rounded-full px-5 py-2.5 text-[10px] font-bold uppercase tracking-wider transition-all duration-300 sm:text-[11px] ${
+                    activeTab === idx 
+                      ? "bg-[#B99A65] text-white shadow-sm" 
+                      : "border border-[#B99A65]/30 text-[#62716D] hover:bg-[#B99A65]/10"
+                  }`}
+                >
+                  {room.name}
+                </button>
+              ))}
+            </div>
 
-        <div ref={trackRef} className="flex snap-x snap-mandatory gap-5 overflow-x-auto overscroll-x-contain pb-6 sm:gap-6 lg:gap-7" style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}>
-          {rooms.map((room) => (
-            <article key={room.number} className="stay-card group flex w-[88%] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-[#B99A65]/25 bg-white transition-all duration-500 hover:-translate-y-1 hover:border-[#B99A65]/80 hover:shadow-[0_20px_55px_rgba(37,48,46,0.10)] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-19px)]">
+            {/* Room Details */}
+            <div className="tab-content-anim">
+              <h3 className="mb-3 font-serif text-2xl leading-normal text-[#142522] sm:text-3xl">{currentRoom.name}</h3>
+              <p className="mb-6 text-sm leading-7 text-[#62716D]">{currentRoom.desc}</p>
+
+              {/* Info Grid */}
+              <div className="mb-8 grid grid-cols-2 gap-y-4 border-b border-[#B99A65]/20 pb-8 text-[13px] text-[#25302E]">
+                <div className="flex items-center gap-2.5"><Users size={16} className="text-[#B99A65]" /> {currentRoom.guests}</div>
+                <div className="flex items-center gap-2.5"><Maximize size={16} className="text-[#B99A65]" /> {currentRoom.size}</div>
+                <div className="flex items-center gap-2.5"><BedDouble size={16} className="text-[#B99A65]" /> {currentRoom.bed}</div>
+                <div className="flex items-center gap-2.5"><Eye size={16} className="text-[#B99A65]" /> {currentRoom.view}</div>
+              </div>
+
+              {/* Price & Actions */}
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                  <span className="font-serif text-3xl text-[#142522] sm:text-4xl">{currentRoom.rate}</span>
+                  <span className="text-xs text-[#62716D] sm:text-sm"> / night</span>
+                </div>
+                <div className="flex gap-3">
+                  <Link 
+                    to="/rooms" 
+                    className="rounded-full border border-[#142522]/20 px-5 py-2.5 text-[10px] font-bold uppercase tracking-wider text-[#142522] transition hover:bg-[#142522] hover:text-white"
+                  >
+                    Details
+                  </Link>
+                  <Link 
+                    to="/bookings" 
+                    className="group flex items-center gap-2 rounded-full bg-[#142522] px-6 py-2.5 text-[10px] font-bold uppercase tracking-wider text-white transition hover:bg-[#B99A65]"
+                  >
+                    Book Now
+                    <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT SIDE: IMAGE & GALLERY */}
+          <div className="flex flex-col gap-3">
+            {/* Main Image */}
+            <div className="stays-image-reveal group relative h-[320px] w-full overflow-hidden rounded-2xl sm:h-[400px] lg:h-[450px]">
+              <img 
+                src={currentRoom.images[activeImgIndex]} 
+                alt={currentRoom.name} 
+                className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+              />
               
-              <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden">
-                <img src={room.image} alt={room.alt} loading="lazy" className="stay-image h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#142522]/65 via-transparent to-transparent opacity-80" />
-                <span className="absolute left-4 top-4 rounded-full border border-white/20 bg-[#142522]/80 px-3 py-1.5 text-[9px] uppercase tracking-[0.16em] text-white backdrop-blur-md sm:text-[10px]">{room.tag}</span>
-                <span className="absolute bottom-3 right-4 font-serif text-5xl text-white/90 sm:text-6xl drop-shadow-md">{room.number}</span>
-              </div>
+              <button onClick={handlePrevImage} aria-label="Previous" className="absolute left-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-[#142522] backdrop-blur-md transition hover:bg-white">
+                <ChevronLeft size={20} />
+              </button>
+              <button onClick={handleNextImage} aria-label="Next" className="absolute right-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-[#142522] backdrop-blur-md transition hover:bg-white">
+                <ChevronRight size={20} />
+              </button>
+            </div>
 
-              <div className="flex flex-1 flex-col p-5 sm:p-6">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <h3 className="font-serif text-2xl leading-tight sm:text-3xl">{room.name}</h3>
-                    <p className="mt-2 text-xs leading-6 text-[#25302E]/65 sm:text-sm">{room.note}</p>
-                  </div>
-                  <div className="shrink-0 text-right">
-                    <span className="block font-serif text-xl text-[#8D744A] sm:text-2xl">{room.rate}</span>
-                    <span className="mt-1 block text-[9px] uppercase tracking-[0.12em] text-[#25302E]/55 sm:text-[10px]">Per night*</span>
-                  </div>
-                </div>
-                <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3 border-t border-[#25302E]/10 pt-4 text-xs text-[#25302E]/70 sm:text-sm">
-                  <span className="inline-flex items-center gap-2"><BedDouble size={16} strokeWidth={1.5} className="shrink-0 text-[#A18451]" /> Comfortable stay</span>
-                  <span className="inline-flex items-center gap-2"><UsersRound size={16} strokeWidth={1.5} className="shrink-0 text-[#A18451]" /> {room.guests}</span>
-                </div>
-                <Link to="/rooms" className="group/link mt-6 flex min-h-12 items-center justify-between rounded-lg border border-[#B99A65]/45 px-4 py-3 text-[10px] font-medium uppercase tracking-[0.18em] transition-all duration-300 hover:border-[#192824] hover:bg-[#192824] hover:text-white sm:mt-7 sm:px-5 sm:text-xs">
-                  <span>View Rooms</span>
-                  <ArrowUpRight size={18} className="transition-transform duration-300 group-hover/link:-translate-y-1 group-hover/link:translate-x-1" />
-                </Link>
-              </div>
-            </article>
-          ))}
+            {/* Thumbnails - Image ke thik neeche aur bade size me */}
+            <div className="stays-reveal mt-1 flex justify-center gap-3 overflow-x-auto pb-2">
+              {currentRoom.images.map((img, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setActiveImgIndex(idx)}
+                  aria-label={`View ${idx + 1}`}
+                  className={`relative h-20 w-28 shrink-0 overflow-hidden rounded-lg border-2 transition-all duration-300 sm:h-24 sm:w-32 ${
+                    activeImgIndex === idx 
+                      ? "border-[#B99A65] opacity-100 shadow-md" 
+                      : "border-transparent opacity-60 hover:opacity-100"
+                  }`}
+                >
+                  <img src={img} alt="Thumb" className="h-full w-full object-cover" />
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
+
+        {/* AMENITIES & CTA */}
+        <div className="stays-reveal mt-12 flex flex-col items-center justify-between gap-8 border-t border-[#B99A65]/20 pt-8 lg:flex-row">
+          
+          <div className="grid w-full grid-cols-2 gap-4 lg:flex lg:w-auto lg:gap-8">
+            {amenities.map((item, idx) => {
+              const Icon = item.icon;
+              return (
+                <div key={idx} className="flex items-center gap-2">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[#B99A65]/30 text-[#B99A65]">
+                    <Icon size={15} strokeWidth={1.5} />
+                  </span>
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-[#62716D]">{item.label}</span>
+                </div>
+              );
+            })}
+          </div>
+
+          <Link
+            to="/rooms"
+            className="group flex shrink-0 items-center gap-3 rounded-full bg-[#142522] px-7 py-3 text-[10px] font-bold uppercase tracking-widest text-white transition-all duration-300 hover:bg-[#B99A65]"
+          >
+            Explore All Rooms
+            <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+          </Link>
+        </div>
+
       </div>
     </section>
   );

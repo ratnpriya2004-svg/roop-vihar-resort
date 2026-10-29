@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom"; // Router import
+import { useNavigate } from "react-router-dom";
 import { CalendarDays, Users, Baby, ArrowUpRight, Sparkles } from "lucide-react";
 import { gsap } from "gsap";
 
@@ -18,7 +18,7 @@ const getNextDay = (date: string) => {
 
 export default function BookingBar() {
   const today = getLocalDate();
-  const navigate = useNavigate(); // Navigation hook
+  const navigate = useNavigate();
 
   const [checkIn, setCheckIn] = useState(today);
   const [checkOut, setCheckOut] = useState(getNextDay(today));
@@ -65,7 +65,6 @@ export default function BookingBar() {
     gsap.to(buttonRef.current, { scale: 1, duration: 0.3, ease: "power2.out" });
   };
 
-  // REDIRECT LOGIC
   const handleCheck = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError("");
@@ -73,7 +72,6 @@ export default function BookingBar() {
     if (checkIn < today) return setError("Please select a valid check-in date.");
     if (checkOut <= checkIn) return setError("Check-out must be after check-in.");
 
-    // URL banayein jisme saara data ho
     const queryParams = new URLSearchParams({
       checkIn,
       checkOut,
@@ -82,28 +80,29 @@ export default function BookingBar() {
       room: roomType,
     }).toString();
 
-    // Redirect to booking page
     navigate(`/bookings?${queryParams}`);
   };
 
   const fieldClass =
-    "h-11 w-full min-w-0 rounded-full border border-[#D8D0C1]/70 bg-white/80 px-4 text-sm text-[#142522] outline-none transition-all duration-300 placeholder:text-[#A6A093] hover:border-[#B99A65]/50 focus:border-[#B99A65] focus:bg-white focus:ring-4 focus:ring-[#B99A65]/15";
+    "h-11 w-full min-w-0 rounded-full border border-[#D8D0C1] bg-[#FBF8F2] px-4 text-sm text-[#142522] outline-none transition-all duration-300 placeholder:text-[#A6A093] hover:border-[#B99A65]/50 focus:border-[#B99A65] focus:bg-white focus:ring-4 focus:ring-[#B99A65]/15";
 
   const iconLabelClass =
     "mb-1.5 flex items-center gap-1.5 text-[9px] font-medium uppercase tracking-[0.18em] text-[#8C7042]";
 
   return (
+    // SECTION BACKGROUND WHITE
     <section
       id="booking"
       aria-label="Stay enquiry"
-      className="relative z-20 mx-auto w-full max-w-[1400px] scroll-mt-24 px-4 py-8 sm:px-6 sm:py-10 lg:px-10 lg:py-12"
+      className="relative z-20 mx-auto w-full max-w-[1400px] scroll-mt-24 bg-[#FBF8F2] px-4 py-8 sm:px-6 sm:py-10 lg:px-10 lg:py-12"
     >
-      <div aria-hidden="true" className="pointer-events-none absolute inset-x-8 top-1/2 -z-10 h-32 -translate-y-1/2 rounded-full bg-[#B99A65]/20 blur-[80px]" />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-x-8 top-1/2 -z-10 h-32 -translate-y-1/2 rounded-full bg-[#B99A65]/10 blur-[80px]" />
 
       <form
         ref={formRef}
         onSubmit={handleCheck}
-        className="relative overflow-hidden rounded-2xl border border-[#B99A65]/40 bg-gradient-to-br from-[#FBF8F2]/95 via-[#F7F3EA]/95 to-[#F6F0E5]/95 p-4 shadow-[0_20px_60px_-15px_rgba(20,37,34,0.15)] backdrop-blur-xl sm:rounded-3xl sm:p-5 lg:p-6"
+        // FORM BACKGROUND PURE WHITE with Shadow
+        className="relative overflow-hidden rounded-2xl border border-[#B99A65]/30 #F5EAD2 p-4 shadow-[0_20px_60px_-15px_rgba(20,37,34,0.08)] sm:rounded-3xl sm:p-5 lg:p-6"
       >
         <div className="booking-gold-line absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#B99A65] to-transparent" />
         <Sparkles size={16} className="booking-sparkle pointer-events-none absolute right-3 top-3 text-[#B99A65]/40" aria-hidden="true" />
