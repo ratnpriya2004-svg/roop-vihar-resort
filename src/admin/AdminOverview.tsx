@@ -12,7 +12,7 @@ export default function AdminOverview() {
 
   useEffect(() => {
     const fetchDashboardData = async () => {
-      // 1. Fetch Counts
+      // 1. Fetch Total Counts (Cards ke liye)
       const { count: roomCount } = await supabase.from("rooms").select("*", { count: "exact", head: true });
       const { count: bookingCount } = await supabase.from("bookings").select("*", { count: "exact", head: true });
       const { count: enquiryCount } = await supabase.from("enquiries").select("*", { count: "exact", head: true });
@@ -23,7 +23,7 @@ export default function AdminOverview() {
         enquiries: enquiryCount || 0,
       });
 
-      // 2. Fetch Recent Bookings
+      // 2. Fetch Recent Bookings (Table ke liye)
       const { data: bookingsData } = await supabase
         .from("bookings")
         .select("*")
@@ -31,24 +31,39 @@ export default function AdminOverview() {
         .limit(5);
       if (bookingsData) setRecentBookings(bookingsData);
 
-      // 3. Dummy Chart Data (Aap isko real data se replace kar sakte hain baad me)
-      setChartData([
-        { name: "Mon", bookings: 4 },
-        { name: "Tue", bookings: 7 },
-        { name: "Wed", bookings: 5 },
-        { name: "Thu", bookings: 12 },
-        { name: "Fri", bookings: 8 },
-        { name: "Sat", bookings: 15 },
-        { name: "Sun", bookings: 10 },
-      ]);
+      // 3. REAL CHART DATA: Pichhle 7 din ki actual bookings nikalna
+      const { data: allBookings } = await supabase.from("bookings").select("created_at");
+      
+      const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      
+      // Pichhle 7 din ka array banayein (Aaj se 6 din pehle tak)
+      const last7Days = Array.from({ length: 7 }, (_, i) => {
+        const d = new Date();
+        d.setDate(d.getDate() - (6 - i)); // 6 din pehle se lekar aaj tak
+        return {
+          dateStr: d.toISOString().split("T")[0], // YYYY-MM-DD format
+          name: daysOfWeek[d.getDay()],           // Mon, Tue, etc.
+          bookings: 0,                            // Start with 0
+        };
+      });
 
+      // Database ki bookings ko in 7 dinon me count karein
+      if (allBookings) {
+        allBookings.forEach((b) => {
+          const bookingDate = b.created_at.split("T")[0];
+          const dayObj = last7Days.find((d) => d.dateStr === bookingDate);
+          if (dayObj) dayObj.bookings += 1;
+        });
+      }
+
+      setChartData(last7Days);
       setLoading(false);
     };
 
     fetchDashboardData();
   }, []);
 
-  // Yahan humne har card ke liye "link" add kiya hai
+  // Top 4 Cards data
   const statCards = [
     { 
       label: "Total Rooms", 
@@ -76,14 +91,15 @@ export default function AdminOverview() {
     },
     { 
       label: "Total Revenue", 
-      value: "₹ 0", 
+      value: "₹ 0", // Isko baad me bookings ke price se calculate kar sakte hain
       icon: TrendingUp, 
       color: "text-purple-600", 
       bg: "bg-purple-50",
-      link: "/admin/dashboard/bookings" // Abhi ke liye bookings par bhej rahe hain
+      link: "/admin/dashboard/bookings"
     },
   ];
 
+  // Pie Chart data (Abhi ke liye static rakha hai kyunki source tracking database me nahi hai)
   const pieData = [
     { name: "Direct", value: 70, color: "#8b5cf6" },
     { name: "Social", value: 20, color: "#0ea5e9" },
@@ -95,7 +111,7 @@ export default function AdminOverview() {
   return (
     <div className="space-y-6">
       
-      {/* 4 STATS CARDS (Now Clickable) */}
+      {/* 4 STATS CARDS */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {statCards.map((stat) => {
           const Icon = stat.icon;
@@ -110,7 +126,7 @@ export default function AdminOverview() {
                   <Icon size={20} />
                 </div>
                 <span className="flex items-center gap-1 text-[10px] font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">
-                  <TrendingUp size={12} /> +8.7%
+                  <TrendingUp size={12} /> Live
                 </span>
               </div>
               <p className="mt-4 text-xs font-medium text-[#62716D]">{stat.label}</p>
@@ -121,14 +137,13 @@ export default function AdminOverview() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* OCCUPANCY CHART (Area) */}
+        {/* WEEKLY BOOKINGS CHART (REAL DATA) */}
         <div className="rounded-2xl border border-[#B99A65]/20 bg-white p-6 shadow-sm lg:col-span-2">
           <div className="mb-6 flex items-center justify-between">
             <h2 className="font-serif text-xl text-[#142522]">Weekly Bookings</h2>
-            <select className="rounded-lg border border-[#D8D0C1] bg-[#FBF8F2] px-3 py-1.5 text-xs text-[#25302E] outline-none">
-               <option>This Week</option>
-               <option>Last Week</option>
-            </select>
+            <span className="rounded-lg border border-[#D8D0C1] bg-[#FBF8F2] px-3 py-1.5 text-xs text-[#25302E]">
+               Last 7 Days
+            </span>
           </div>
           <div className="h-[280px] w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -140,7 +155,7 @@ export default function AdminOverview() {
                   </linearGradient>
                 </defs>
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#62716D', fontSize: 12}} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{fill: '#62716D', fontSize: 12}} />
+                <YAxis axisLine={false} tickLine={false} tick={{fill: '#62716D', fontSize: 12}} allowDecimals={false} />
                 <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
                 <Area type="monotone" dataKey="bookings" stroke="#8b5cf6" strokeWidth={3} fillOpacity={1} fill="url(#colorBookings)" />
               </AreaChart>
